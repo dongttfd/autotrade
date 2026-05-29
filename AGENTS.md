@@ -192,6 +192,7 @@ study._graphics._primitivesCollection.dwglines.get('lines').get(false)._primitiv
 ## Skills
 When a task matches one of these workflows, read the corresponding SKILL.md for step-by-step instructions:
 - Chart analysis → `skills/chart-analysis/SKILL.md`
+- EMA trend retest → `skills/ema-trend-retest/SKILL.md`
 - Liquidity analysis → `skills/liquidity-smart-money/SKILL.md`
 - MACD trading → `skills/macd-trading/SKILL.md`
 - Multi-symbol scan → `skills/multi-symbol-scan/SKILL.md`

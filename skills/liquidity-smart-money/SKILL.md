@@ -9,13 +9,13 @@ You are performing a Smart Money liquidity analysis on a TradingView chart. This
 
 ## Key Principles (Read First)
 
-These rules override everything else. Violating any of them invalidates the analysis.
+These rules override everything else. If these conditions cannot be verified, state your uncertainty in the report and do not promote the setup.
 
 1. **Never identify a trading range on the entry timeframe.** Always zoom out 1–2 timeframes higher.
-2. **A BOS is only valid if price pulled back past Fibonacci 50% into the opposite zone before the breakout.** If it didn't, the breakout is false and the range is invalid.
-3. **A trading range is only confirmed when price breaks past the nearest internal swing point — the inducement (a level that traps early entries to generate liquidity) — on the expansion side** after the BOS expansion completes.
+2. **A BOS is only valid if price pulled back past Fibonacci 50% into the opposite zone within the impulse setup before accepting the BOS as valid.** If it didn't, the breakout is false and the range is invalid.
+3. **A trading range is confirmed only after the expansion swing is followed by an inducement break, as defined in Step 2b.**
 4. **Internal liquidity is fuel, not the final target.** Smart money uses internal liquidity to power moves toward external liquidity.
-5. **External liquidity sweeps have the highest probability.** Internal swing high/low sweeps are generally low-probability traps — see Step 5c for exception criteria.
+5. **External liquidity sweeps are preferred over internal sweeps.** Internal swing high/low sweeps are generally low-probability traps — see Step 5c for exception criteria.
 6. **High-quality sweeps happen around session opens** (London, New York) when volume is highest.
 
 ---
@@ -78,21 +78,28 @@ Do not read OHLCV in parallel with a just-issued symbol or timeframe change. Wai
 
 Find the valid trading range before analyzing anything else. This is the foundation of the entire analysis.
 
-### 2a. Find the Most Recent Valid BOS
+### 2a. Find the Active Valid BOS / Dealing Range
 
 1. `data_get_ohlcv` — pull enough bars to see recent swing structure (count: 100–200)
-2. Look for the most recent **BOS** — where price broke above a previous swing high (bullish) or below a previous swing low (bearish)
+2. Look for the **BOS** — where price broke above a previous swing high (bullish) or below a previous swing low (bearish). If multiple valid BOS exist, prioritize the HTF dealing range that currently contains price and has obvious external liquidity (avoid picking a tiny intraday range just because it's "most recent"). Report nested ranges if there is a conflict.
 3. **Validate the BOS:**
-   - Draw Fibonacci across the impulse move
-   - Check: did price pull back **past the 50% level into the opposite zone** before the breakout? (Bullish → discount. Bearish → premium.)
+   - Calculate/mark the 50% level across the impulse move to measure the retracement:
+     - Bullish: anchor from impulse origin low to expansion high (broken structure high).
+     - Bearish: anchor from impulse origin high to expansion low (broken structure low).
+   - Check: did price pull back **past the 50% level into the opposite zone within the impulse setup before accepting the BOS as valid.** (Bullish → discount. Bearish → premium.)
    - If YES → valid BOS. If NO → false breakout, skip this and look further back.
 
 ### 2b. Confirm the Range Boundaries
 
-Once a valid BOS is found:
-- **Range bottom** = the swing low that started the valid impulse
-- **Range top** = confirmed when price breaks below the nearest **internal low in the premium zone** (the inducement). That swing high becomes the upper boundary.
-- For a **bearish BOS**, mirror the logic: top = impulse swing high, bottom confirmed after inducement break in the discount zone.
+Once a valid BOS is found, explicitly define the boundaries based on direction:
+
+**For a Bullish BOS Range:**
+- **Lower Boundary:** The swing low that originated the impulse.
+- **Upper Boundary:** The swing high of the expansion. This boundary is *only confirmed* after price breaks below the nearest internal low (inducement) in the premium zone.
+
+**For a Bearish BOS Range:**
+- **Upper Boundary:** The swing high that originated the impulse.
+- **Lower Boundary:** The swing low of the expansion. This boundary is *only confirmed* after price breaks above the nearest internal high (inducement) in the discount zone.
 
 ### 2c. Draw the Range
 
@@ -114,17 +121,27 @@ External liquidity exists **above the range top** and **below the range bottom**
 - **Buy-Side Liquidity** = above swing highs — stop losses of short positions and buy-stop orders cluster here
 - **Sell-Side Liquidity** = below swing lows — stop losses of long positions and sell-stop orders cluster here
 
-Mark these zones:
-1. `draw_shape` with `horizontal_line` — mark external liquidity above the range top
-2. `draw_shape` with `horizontal_line` — mark external liquidity below the range bottom
+Prioritize marking these specific External Liquidity pools (If insufficient data to identify these levels, report them as unavailable/uncertain):
+1. Range boundaries (Range Top / Range Bottom)
+2. Previous Day/Week Highs and Lows (PDH/PDL, PWH/PWL)
+3. Session Extremes (Asia/London/NY Highs and Lows)
+4. Equal Highs (EQH) and Equal Lows (EQL)
+
+Use `draw_shape` with `horizontal_line` to mark the most obvious external liquidity targets.
 
 ### 3b. Internal Liquidity (Inside the Range)
 
-Internal liquidity exists within the trading range. Look for all of these:
+Internal liquidity exists within the trading range. FVG and OB identification should adapt to available data:
 
-1. `data_get_pine_lines` — check for key levels drawn by indicators
-2. `data_get_pine_labels` — look for labeled levels (FVG, OB, etc.)
-3. `data_get_pine_boxes` — find price zones / imbalance areas
+- **If custom indicators are visible:**
+  *(When the target indicator is known, always pass `study_filter`)*
+  1. `data_get_pine_lines` — check for key levels drawn by indicators
+  2. `data_get_pine_labels` — look for labeled levels (FVG, OB, etc.)
+  3. `data_get_pine_boxes` — find price zones / imbalance areas
+- **If no custom indicators are present:** Do not fail. Identify FVG/OB visually via `capture_screenshot` or structurally via `data_get_ohlcv`.
+  - *For OHLCV-based FVG:* Use a 3-candle imbalance.
+    - **Bullish FVG:** candle 1 high < candle 3 low.
+    - **Bearish FVG:** candle 1 low > candle 3 high.
 
 Internal liquidity forms include:
 - **Fair Value Gaps (FVG)** — imbalance zones left by fast price moves
@@ -143,18 +160,22 @@ Determine which direction price is likely heading by reading how price interacts
 
 ### 4a. Check FVG Reaction (Direction Signal)
 
-Price's reaction to Fair Value Gaps inside the range reveals the next target:
+Price's reaction to Fair Value Gaps inside the range reveals the next target. **CRITICAL RULE:** Always classify FVG direction, location relative to premium/discount, and whether it aligns with HTF range before using it as bias evidence. A FVG stuck in the middle of a range is just an internal draw, not strong directional bias.
 
-**Scenario A — Bullish signal:**
-- Price touches a FVG and **respects it** (especially the midpoint)
-- Price shows **rejection** (wick / reversal candle) bouncing upward
-- → Price is likely heading toward **External Buy-Side Liquidity** (above range top)
+**Scenario A — Bullish Continuation/Reversal:**
+- Price pulls back into a **Bullish FVG located in the Discount zone**.
+- Price shows **rejection** (wick / reversal candle) bouncing upward.
+- → Bias aligns upward toward **External Buy-Side Liquidity**.
 
-**Scenario B — Bearish signal:**
-- Price **punches through** the FVG without significant reaction
-- The FVG becomes an **Inverse Value Gap** (role reversal — now acts as resistance)
-- If price then pulls back to the Inverse Gap, respects its midpoint, and shows rejection downward
-- → Price is likely heading toward **External Sell-Side Liquidity** (below range bottom)
+**Scenario B — Bearish Continuation/Reversal:**
+- Price pulls up into a **Bearish FVG located in the Premium zone**.
+- Price shows **rejection** (wick / reversal candle) bouncing downward.
+- → Bias aligns downward toward **External Sell-Side Liquidity**.
+
+**Scenario C — Inverse FVG (Trend Shift):**
+- Price **punches through** an FVG without significant reaction (e.g., a Bullish FVG is violated downwards).
+- The FVG becomes an **Inverse Value Gap** (role reversal — now acts as resistance).
+- Pullbacks to this Inverse Gap that show rejection confirm the shift in direction.
 
 ### 4b. Check for Efficient Price Action
 
@@ -177,28 +198,28 @@ A liquidity sweep is the highest-conviction trade signal in this framework.
 
 ### What Is a Sweep
 
-Price breaks above/below a key level, triggers the stops and pending orders there, then **immediately closes back inside the range** and reverses toward the opposite liquidity.
+Price breaks above/below a key level, triggers the stops and pending orders there, then closes back inside. **CRITICAL:** Do not treat a wick beyond liquidity as a trade signal unless price reclaims the level AND shows displacement or a Market Structure Shift (MSS) back inside. Otherwise, it might just be a breakout or price accepting outside the range.
 
 ### 5a. Check for External Sweeps (High Probability)
 
 1. `quote_get` — get current price
-2. `data_get_ohlcv` — check recent bars for wicks beyond range boundaries
-3. Look for: price spiked above range top (or below range bottom), then closed back inside
+2. `data_get_ohlcv` — check recent bars for wicks beyond external liquidity
+3. Look for the sweep + reclaim + displacement confirmation.
 
-**If a Buy-Side sweep occurred** (wick above range top, close back inside):
-- → Expect reversal toward Sell-Side Liquidity (range bottom and below)
+**If a confirmed Buy-Side sweep occurred** (wick above liquidity, close back inside, strong bearish displacement/MSS):
+- → Expect reversal toward Sell-Side Liquidity (range bottom and below).
 
-**If a Sell-Side sweep occurred** (wick below range bottom, close back inside):
-- → Expect reversal toward Buy-Side Liquidity (range top and above)
+**If a confirmed Sell-Side sweep occurred** (wick below liquidity, close back inside, strong bullish displacement/MSS):
+- → Expect reversal toward Buy-Side Liquidity (range top and above).
 
 ### 5b. Session Context Matters
 
-The best sweeps occur around major session opens:
-- **Asian session (00:00–08:00 UTC)** — low volume, price typically consolidates into a tight range. This range becomes the liquidity target for London open.
-- **London open (08:00 UTC)** — price often fakes above/below the Asian session range, then reverses
-- **New York open (13:30 UTC)** — price often sweeps London's high/low, then drives in the real direction
+The best sweeps occur around major session opens (use exchange/session calendar when available; otherwise approximate, as DST shifts these times):
+- **Asian session (approx. 00:00–08:00 UTC)** — low volume, price typically consolidates into a tight range. This range becomes the liquidity target for London open.
+- **London open (approx. 08:00 UTC)** — price often fakes above/below the Asian session range, then reverses
+- **New York open (approx. 13:30–14:30 UTC)** — price often sweeps London's high/low, then drives in the real direction
 
-Pattern: NY open pushes above London high → sweeps Buy-Side → reverses hard → takes out London low → continues in the true planned direction.
+Pattern: NY open pushes above London high → sweeps Buy-Side → reverses hard → takes out London low → continues in the confirmed direction.
 
 For crypto: session logic applies to BTC/ETH (institutional volume follows the same hours). Less reliable for low-cap altcoins.
 
@@ -217,7 +238,7 @@ Mark any detected sweeps with `draw_shape` and `capture_screenshot`.
 
 Synthesize everything into a clear analysis.
 
-1. `capture_screenshot` — final annotated chart
+1. `capture_screenshot` — capture final screenshot when annotations were added or visual confirmation is requested.
 2. `draw_list` — review all annotations placed
 
 If `draw_list` or `draw_clear` fails, state the failure and continue with screenshot-based verification.
@@ -245,37 +266,26 @@ If `draw_list` or `draw_clear` fails, state the failure and continue with screen
 - Session context: [London / NY / Asian range]
 
 ### Bias & Targets
-- **Bias:** [Bullish / Bearish] — [reasoning]
+- **Confidence:** [High / Medium / Low] — [state what is unconfirmed or what would confirm next]
+- **Bias:** [Bullish / Bearish / Neutral] — [reasoning]
 - **Primary target:** [specific external liquidity level]
 - **Invalidation:** [what would flip the bias]
+
+### Setup Status & Entry
+- **Status:** [Waiting / Active / Invalidated / No-Trade]
+- **Entry Trigger:** [e.g., waiting for sweep + reclaim + displacement / MSS / FVG retest]
+- **No-Trade Conditions:** [e.g., range unconfirmed, price stuck mid-range, no displacement, upcoming high-impact news]
 ```
 
 ---
 
 ## Trade Management Additions
 
-Use this section when the user asks about managing an existing position, especially after TP1.
+*Note: For detailed trade management rules, refer to `trading-experience/liquidity-conversation-lessons.md`. Keep responses concise.*
 
-After TP1 is reached, stop treating the trade as an entry setup. Switch to runner management:
-
-- **Tight stop:** protects profit but is easier to sweep
-- **Structure stop:** gives the trade more room toward the next liquidity target
-- **Invalidation stop:** the level where the original idea is no longer valid
-
-Do not provide a single SL number without stating its purpose. Use this response shape:
-
-- "If protecting profit is the priority: [tight stop]."
-- "If holding for the next liquidity target is the priority: [structure stop]."
-- "If this level breaks: [invalidation]."
-
-When drawing an execution chart, keep annotations minimal:
-
-- active range or equilibrium only if it affects the decision
-- primary entry zone
-- invalidation
-- main liquidity targets
-
-Avoid drawing every candidate level unless the user asks for full context.
+When managing an existing position after TP1:
+- State SL choices clearly by purpose: "Tight stop for profit protection", "Structure stop for next target", or "Invalidation stop".
+- Keep execution chart annotations minimal (entry, invalidation, main targets).
 
 ---
 

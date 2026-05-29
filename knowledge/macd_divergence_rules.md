@@ -183,32 +183,19 @@ ZLR occurs when MACD approaches the zero line but **fails to cross it** and turn
 
 ### 5b. Quantitative Definition
 
-Using the zone classification from SKILL.md Step 3c:
-
-```
-reference = percentile_90(|MACD|, last 100 bars)
-current_ratio = |current MACD| / reference
-```
-
-**Bullish ZLR criteria (all must be true):**
-1. MACD was positive (above zero) for the prior trend
-2. MACD was previously at ratio > 30% (it was in Mid Range or Extended zone — confirming a real trend existed)
-3. MACD magnitude decreased toward zero, entering the Near Zero zone: `ratio < 30%`
-4. MACD remained positive (did NOT cross below zero)
-5. MACD turned back upward (slope became positive)
-6. Histogram switched from contracting to expanding
-7. ADX > 25 (confirmed trending market)
-8. Price is above BOTH EMA 50 and EMA 200 (strong bullish structure)
+**Bullish ZLR criteria:**
+1. MACD was positive (above zero) for the prior trend.
+2. MACD decreased toward zero visibly (pulled back).
+3. MACD remained positive (did NOT cross below zero).
+4. MACD turned back upward (slope became positive).
+5. Price is above BOTH EMA 50 and EMA 200 (strong bullish structure).
 
 **Bearish ZLR criteria (mirror of above):**
-1. MACD was negative (below zero) for the prior trend
-2. MACD was previously at ratio > 30%
-3. MACD magnitude decreased toward zero, entering Near Zero zone: `ratio < 30%`
-4. MACD remained negative (did NOT cross above zero)
-5. MACD turned back downward
-6. Histogram switched from contracting to expanding (negative expansion)
-7. ADX > 25
-8. Price is below BOTH EMA 50 and EMA 200
+1. MACD was negative (below zero) for the prior trend.
+2. MACD decreased toward zero visibly.
+3. MACD remained negative (did NOT cross above zero).
+4. MACD turned back downward.
+5. Price is below BOTH EMA 50 and EMA 200.
 
 ### 5c. Valid vs Invalid ZLR Examples
 
@@ -216,9 +203,8 @@ current_ratio = |current MACD| / reference
 ```
 Bar:    1     5     10    15    20    25
 MACD:  +3.2  +2.1  +0.8  +0.3  +0.6  +1.4
-                          ↑ Near Zero zone (ratio ~6%), stays positive, bounces back
-ADX = 28 ✅, Price > EMA50 ✅, Price > EMA200 ✅
-Histogram: contracting from bar 1-15, expanding from bar 15-25 ✅
+                          ↑ Near zero, stays positive, bounces back
+Price > EMA50 ✅, Price > EMA200 ✅
 ```
 
 **❌ Invalid — Zero Line CROSS (not rejection):**
@@ -232,20 +218,19 @@ MACD:  +2.0  +0.8  -0.2  -0.5  +0.3  +1.1
 ```
 Bar:    1     5     10    15    20    25
 MACD:  +0.1  -0.1  +0.2  -0.05 +0.1  +0.15
-All values in Near Zero zone, no clear trend direction — this is chop, not ZLR
-ADX likely < 20 in this scenario
+All values near zero, no clear trend direction — this is chop, not ZLR
 ```
 
-**❌ Invalid — Missing ADX/EMA conditions:**
+**❌ Invalid — Missing EMA conditions:**
 ```
 Bar:    1     5     10    15    20    25
 MACD:  +2.5  +1.2  +0.4  +0.8  +1.5  +2.0
 Looks like ZLR shape ✅
-But ADX = 18 ❌ — market is not trending enough to qualify
+But Price is < EMA200 ❌ — market is not trending enough to qualify
 ```
 
 > [!NOTE]
-> **Cross-reference:** Zone calculation (`percentile_90` method) is defined in SKILL.md Step 3c. ADX requirements are in SKILL.md Step 3e. The overall entry gate combining MACD zone + confluence is in SKILL.md Step 5d.
+> **Cross-reference:** The overall entry gate combining MACD + confluence is in SKILL.md Step 4.
 
 ---
 
@@ -258,11 +243,10 @@ But ADX = 18 ❌ — market is not trending enough to qualify
 | Location | At major S/R level | In open space |
 | Components | Both MACD Line + Histogram | Only one |
 | Subtype | Hidden div aligned with HTF trend | Regular div against trend |
-| MACD Zone | Near Zero (< 30%) | Extended (> 60%) |
+| MACD State | Visually near zero | Visually extended |
 | Separation | Pivots 15-50 bars apart | Pivots < 5 bars or > 100 bars apart |
 
-> [!NOTE]
-> **Cross-reference:** This quality checklist is used during SKILL.md Step 4 (Divergence Gate) to rate the strength of detected divergence.
+> **Cross-reference:** This quality checklist is used during SKILL.md Step 4 (Entry Trigger Gate) to rate the strength of detected divergence.
 
 ---
 

@@ -1,4 +1,9 @@
 # Liquidity Hack nâng cao cho Trader chuyên nghiệp
+
+> [!IMPORTANT]
+> **Đây là bản Transcript lý thuyết (Theory Reference).**
+> Quy trình thao tác chuẩn, các điều kiện chặt chẽ (như phân loại FVG, xác nhận Sweep qua MSS) được định nghĩa tại `skills/liquidity-smart-money/SKILL.md`. **SKILL.md is the authoritative operational version.** Vui lòng tuân thủ SKILL.md khi thực hiện phân tích.
+
 Mình sẽ nói về một thứ mà nếu các bạn chưa nắm được thì thị trường sẽ lấy tiền của các bạn mãi mãi. Đó là Liquidity. Không phải Liquidity cơ bản mà ai cũng biết. Mình nói đến cách đọc dòng chảy thanh khoản đúng theo cách mà Smart Money thực sự vận hành phía sau mỗi cây nến. Nghe có vẻ đơn giản nhưng đây là chỗ mà hầu hết trader đều sai. Entry đẹp, setup chuẩn, vậy mà vẫn bị quét stop loss. Vì các bạn đang đọc chart mà không thấy được dòng chảy thanh khoản phía sau nó. Vậy nên trong video hôm nay, mình sẽ breakdown 4 liquidity hack nâng cao, 4 thứ mà thiếu một trong số đó các bạn đang trade như đi trong bóng tối vậy.
 Sau video này, các bạn sẽ thấy liquidity hiện ra trên chart theo một cách hoàn toàn khác. Biết cách đọc nó real time ngay khi giá đang di chuyển. Và quan trọng nhất, biết cách đứng cùng phía với smart money thay vì trở thành thanh khoản mà họ săn.
 Chào mừng quay trở lại các traders. Bắt đầu thôi.

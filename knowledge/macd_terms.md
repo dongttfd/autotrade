@@ -19,7 +19,6 @@
 | Histogram Expanding | Histogram mở rộng | Các cột histogram ngày càng dài hơn → momentum đang tăng mạnh theo hướng hiện tại. |
 | Histogram Contracting | Histogram co lại | Các cột histogram ngày càng ngắn hơn → momentum đang suy yếu, cảnh báo sớm trước khi crossover xảy ra. |
 | Confluence | Hội tụ tín hiệu | Nhiều chỉ báo hoặc yếu tố phân tích cùng xác nhận một hướng giao dịch. Càng nhiều confluence → tín hiệu càng đáng tin. |
-| Confluence Score | Điểm hội tụ | Hệ thống chấm điểm dựa trên nhiều yếu tố xác nhận (S/R, Volume, EMA, RSI). Xem SKILL.md Step 5 cho hệ scoring và ngưỡng cụ thể. |
 | EMA (Exponential Moving Average) | Đường trung bình động lũy thừa | Trung bình giá có trọng số, dữ liệu gần nhất được ưu tiên hơn. EMA 200 dùng làm trend filter chính. |
 | EMA 200 | EMA chu kỳ 200 | Đường trung bình dài hạn dùng để xác định xu hướng chính. Giá > EMA 200 = bullish bias, giá < EMA 200 = bearish bias. |
 | RSI (Relative Strength Index) | Chỉ số sức mạnh tương đối | Chỉ báo momentum có biên (0-100). RSI < 30 = oversold, RSI > 70 = overbought. Kết hợp với MACD để tăng confluence. |
