@@ -62,3 +62,14 @@
 | Runner management | Quản lý lệnh giữ | Cách quản lý phần vị thế còn lại sau khi đã chốt lời một phần (TP1). |
 | TP (Take Profit) | Chốt lời | Mức giá mục tiêu để đóng một phần hoặc toàn bộ vị thế có lãi. TP1 là mức chốt lời đầu tiên. |
 | Invalidation | Điểm mất hiệu lực | Mức giá mà nếu giá chạm đến, ý tưởng giao dịch ban đầu không còn hợp lệ. |
+| Dealing Range | Vùng giao dịch chính | Trading range ở khung thời gian lớn (HTF), bao trùm toàn bộ hành động giá hiện tại và chứa thanh khoản bên ngoài rõ ràng. |
+| HTF (Higher Time Frame) | Khung thời gian lớn | Khung thời gian cao hơn 1-2 cấp so với khung entry. Dùng để xác định bias và cấu trúc chính. |
+| MSS (Market Structure Shift) | Phá vỡ cấu trúc nghịch | Sự thay đổi cấu trúc thị trường ở khung thời gian nhỏ, xác nhận xu hướng đã đảo chiều sau khi quét thanh khoản. |
+| Displacement | Lực đẩy mạnh | Một cú di chuyển giá mạnh mẽ, dứt khoát (thường đi kèm thân nến lớn và tạo FVG), xác nhận phe mua hoặc bán đang kiểm soát. |
+| Reclaim | Lấy lại vùng giá | Giá đâm qua một key level nhưng sau đó đóng cửa ngược lại và giữ vững bên trong vùng giá cũ, xác nhận cú quét (sweep) thành công. |
+| PDH / PDL | Đỉnh/Đáy ngày hôm trước | Previous Day High / Previous Day Low. Điểm hút thanh khoản cực mạnh dựa trên phiên giao dịch ngày hôm trước. |
+| PWH / PWL | Đỉnh/Đáy tuần trước | Previous Week High / Previous Week Low. Điểm hút thanh khoản cấu trúc mạnh trên khung thời gian lớn. |
+| EQH / EQL | Đỉnh/Đáy bằng nhau | Equal Highs / Equal Lows. Các vùng đỉnh hoặc đáy bằng nhau tạo thành kháng cự/hỗ trợ giả, chứa cực nhiều thanh khoản để quét. |
+| Bullish FVG | FVG tăng giá | Khoảng trống giá (3 nến) hình thành khi giá đẩy mạnh lên, nến 1 high < nến 3 low. Hỗ trợ giá tăng. |
+| Bearish FVG | FVG giảm giá | Khoảng trống giá (3 nến) hình thành khi giá đẩy mạnh xuống, nến 1 low > nến 3 high. Kháng cự giá giảm. |
+| OB (Order Block) | Khối lệnh | Vùng giá (thường là cây nến ngược màu cuối cùng) trước khi diễn ra một cú displacement mạnh mẽ phá vỡ cấu trúc. |

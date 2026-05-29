@@ -1,7 +1,6 @@
 # MACD — Hiểu Biết Toàn Diện & Chiến Thuật Giao Dịch Hiệu Quả
 
-> [!WARNING]
-> **This is background knowledge, NOT trading instructions.** This file explains general MACD theory and common strategies. When operating under the `macd-trading` skill, the SKILL.md rules override everything here. Specifically: crossover alone is NEVER a valid entry under the skill — divergence or Zero Line Rejection is required. Do not use strategies from this file as entry rules without passing the Divergence Gate or ZLR Gate defined in SKILL.md.
+> **This is background knowledge, NOT trading instructions.** This file explains general MACD theory and common strategies. When operating under the `macd-trading` skill, the SKILL.md rules override everything here. Specifically: crossover alone is NEVER a valid entry under the skill — divergence or Zero Line Rejection is required. Do not use strategies from this file as entry rules without passing the Entry Trigger Gate defined in SKILL.md.
 
 ---
 
@@ -160,7 +159,7 @@ Divergence là tín hiệu **có giá trị nhất** của MACD, báo hiệu **m
 ### 4.1 Chiến thuật #1: MACD Crossover + Trend Filter
 
 > [!CAUTION]
-> **Under the `macd-trading` skill, crossover + trend filter alone is NOT sufficient for entry.** Divergence (Step 4) or Zero Line Rejection must be confirmed first. This section is background theory only.
+> **Under the `macd-trading` skill, crossover + trend filter alone is NOT sufficient for entry.** Entry Trigger Gate in Step 4 must be confirmed first. This section is background theory only.
 
 **Nguyên tắc:** Chỉ giao dịch crossover **theo hướng xu hướng chính**.
 
@@ -275,8 +274,7 @@ Timeframe thấp (1H hoặc 15m): Tìm điểm entry
 
 ## 5. Kết Hợp MACD Với Các Chỉ Báo Khác
 
-> [!CAUTION]
-> **Background theory only.** The combination strategies below describe general MACD usage patterns. Under the `macd-trading` skill, none of these combinations alone qualify as an entry — all entries must pass the Divergence Gate or ZLR Gate defined in SKILL.md.
+> **Background theory only.** The combination strategies below describe general MACD usage patterns. Under the `macd-trading` skill, none of these combinations alone qualify as an entry — all entries must pass the Entry Trigger Gate defined in SKILL.md.
 
 ### 5.1 MACD + RSI
 
