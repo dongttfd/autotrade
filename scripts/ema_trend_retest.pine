@@ -1,0 +1,65 @@
+//@version=6
+strategy("EMA Trend Retest AI", overlay=true, initial_capital=10000, default_qty_type=strategy.percent_of_equity, default_qty_value=2, margin_long=100, margin_short=100)
+
+// Dates
+startDate = timestamp(2026, 02, 10, 0, 0)
+inDateRange = time >= startDate
+
+// Indicators
+ema36 = ta.ema(close, 36)
+ema54 = ta.ema(close, 54)
+ema89 = ta.ema(close, 89)
+ema150 = ta.ema(close, 150)
+atr14 = ta.atr(14)
+[diPlus, diMinus, adx14] = ta.dmi(14, 14)
+
+// Regime
+emaSpread = math.abs(ema36 - ema150)
+range20 = ta.highest(high, 20) - ta.lowest(low, 20)
+regimePass = adx14 > 18 and emaSpread > (0.5 * atr14) and range20 > (1.5 * atr14)
+
+// Trend & Slope
+trendLong = (ema36 > ema54) and (ema54 > ema89) and (ema89 > ema150) and (close > ema150)
+trendShort = (ema36 < ema54) and (ema54 < ema89) and (ema89 < ema150) and (close < ema150)
+slopeLong = ema36 > ema36[5] and ema54 > ema54[5]
+slopeShort = ema36 < ema36[5] and ema54 < ema54[5]
+validLongTrend = trendLong and slopeLong and regimePass
+validShortTrend = trendShort and slopeShort and regimePass
+
+// Pullback
+longTouch = low <= ema54 and close > ema150
+shortTouch = high >= ema54 and close < ema150
+
+// Confirmation
+bullishCandle = close > open
+bearishCandle = close < open
+
+// Pin bar definition (rejection wick at least 2x body)
+bodySize = math.abs(close - open)
+longWick = math.abs(open - low)
+shortWick = math.abs(high - close)
+if (close < open)
+    longWick := math.abs(close - low)
+    shortWick := math.abs(high - open)
+
+longPinBar = bullishCandle and longWick > (2 * bodySize)
+shortPinBar = bearishCandle and shortWick > (2 * bodySize)
+engulfingBull = close > open[1] and open < close[1] and bearishCandle[1]
+engulfingBear = close < open[1] and open > close[1] and bullishCandle[1]
+
+longTrigger = (engulfingBull or longPinBar) and longTouch[1]
+shortTrigger = (engulfingBear or shortPinBar) and shortTouch[1]
+
+longCondition = validLongTrend and longTrigger and inDateRange
+shortCondition = validShortTrend and shortTrigger and inDateRange
+
+slSize = atr14 * 1.5
+tpSize = slSize * 1.5 // 1:1.5 R:R
+
+if (longCondition and strategy.position_size == 0)
+    strategy.entry("Long", strategy.long)
+    strategy.exit("Exit Long", "Long", stop=close - slSize, limit=close + tpSize)
+
+if (shortCondition and strategy.position_size == 0)
+    strategy.entry("Short", strategy.short)
+    strategy.exit("Exit Short", "Short", stop=close + slSize, limit=close - tpSize)
